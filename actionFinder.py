@@ -13,7 +13,7 @@ args = sys.argv
 if len(args) != 2:
     print("Usage: actionFinder.py [filename]")
 else:
-    minutes = open(args[1], "r")
+    minutes = open(args[1], "r+a")
     matches = pattern.findall(minutes.read())
     for match in matches:
         action = match[1].strip()
@@ -27,17 +27,20 @@ else:
             if len(involved) == 1:
                 committeeActions[involved[0]].append(action)
             if len(involved) == 0:
-                committeeActions['Other'].append(match[0]+": "+action)
+                committeeActions['Other'].append("("+match[0].strip()+") "+action)
             else:
                 for name in involved:
                     committeeActions[name].append(action+' (along with '+(', '.join([n for n in involved if n!=name]))+')')
     #print committeeActions
     # Print results
+	outputString = "--\nAction Items:\n"
     for name in committeeNames:
     	if len(committeeActions[name]) == 0:
     		continue
-        print(name+":")
+        outputString += name+":\n"
         for item in committeeActions[name]:
-            print("> "+item[:1].upper()+item[1:])
-        print("")
+            outputString += "> "+item[:1].upper()+item[1:]+"\n"
+        outputString += "\n"
+    print(outputString)
+    minutes.write(outputString)
         
