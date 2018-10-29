@@ -14,9 +14,12 @@ args = sys.argv
 if len(args) != 3:
     print("Usage: regulationParser.py [inFile] [outFile]")
 else:
-    inFile = open(args[1], "rU")
+    inFile = open(args[1], "r")
     outFile = open(args[2], "w")
 
     html = markdown.markdown(inFile.read())
     
-    print(html, file=outFile)
+    simplesoup = BeautifulSoup(html, 'html.parser')
+    simplesoup.ul['class'] = "regulations"
+    
+    print(simplesoup.prettify(), file=outFile)
